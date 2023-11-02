@@ -1,0 +1,10 @@
+attach(Fuel)
+#here it should be lm(y~x), and NOT lm(x~y)
+result=lm(Fuelcons~Temp)
+summary(result)
+# there is confint(regression result, level = 1- alpha)
+confint(result, level=0.95)
+
+new.dat <- data.frame(Temp=30)
+predict(result, newdata = new.dat, interval = 'confidence', level = 0.9)
+predict(result, newdata = new.dat, interval = 'prediction')

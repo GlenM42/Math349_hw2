@@ -1,0 +1,114 @@
+---
+title: "Problem 2"
+author: "Glen Miasnychenko"
+date: "2023-09-07"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Here is my code for the second problem of the second homework.
+
+### Problem 2 - A
+
+```{r cars}
+library(readxl)
+file_path <- "~/Downloads/FreshDetergent.xlsx"
+FreshDetergent <- read_excel(file_path)
+attach(FreshDetergent)
+#Demand = beta0+beta1*PriceDif+error
+result=lm(Demand ~ PriceDif)
+summary(result)
+```
+
+
+### Problem 2 - B
+
+We can identify the estimates for Beta0 and Beta1, using the output above. In
+particular, we have to look for the *Estimate* column in the table. From there we get:
+
+**Estimate for Beta0** = 7.81409  
+**Estimate for Beta1** = 2.66521
+
+### Problem 2 - C
+
+The table does not contain information for all of the required statistics. What it does
+contain is the *MSE* (also known as *Residual Standard error*) and *degrees of freedom*.  
+
+With that information we can calculate everything we need:  
+
+**SSE** = MSE * df = 0.3166*28 = 8.8648.   
+**s^2** = MSE = 0.3166.   
+**s** = sqrt(0.3166) = 0.5626722.   
+
+### Problem 2 - D
+
+The values for T-test on Beta1 can be found in the *PriceDif* string of the initial table.
+From there we get:
+
+**t(Beta1)** = 10.31.   
+**Pr(>|t|)** = 4.88e-11.   
+
+With Alpha = 0.05, we have to reject the Null Hypothesis, since p<Alpha. Therefore our model fits the data.
+
+### Problem 2 - E
+```{r}
+confint(result, level = 0.95)
+```
+
+Therefore the CI for Beta1 is (2.135702; 3.194727).
+
+### Problem 2 - F
+
+The values for T-test on Beta0 can be found in the *Intercept* string of the initial table.
+From there we get:
+
+**t(Beta0)** = 97.82.     
+**Pr(>|t|)** = 2e-16. 
+
+With Alpha = 0.05, we have to reject the Null Hypothesis, since p<Alpha.Therefore, our model fits the data.
+
+### Problem 2 - G
+```{r}
+new.dat <- data.frame(PriceDif=0.1)
+predict(result, newdata = new.dat, interval = 'confidence', level = 0.95)
+predict(result, newdata = new.dat, interval = 'prediction', level = 0.95)
+```
+
+### Problem 2 - H
+
+We know that **simple coefficient of determination** = r^2, and it can be found in the 
+original table. From there we know r^2 = 0.7915. This means that 0.7915 of variance of 
+the dependent variable is explained by the model.         
+
+Then, we can use unexplained variation from the part C:   
+**Sum of Squares of Error** = SSE = 8.8648.      
+
+In order to find the **Sum of Squares of Regression**, we will use the formula for F-statistic:     
+SSR =  F * (SSE/(n-2)) = 106.3 * (8.8648/28) = 335.7549.      
+
+Therefore, the **Total Variation** = SST = SSE + SSR = 8.8648 + 335.7549 = 344.6197
+
+### Problem 2 - I
+
+**F-Statistic** can be found in the table. From there, F = 106.3.       
+The respective **p-value** = 4.881e-11.     
+
+Since the p-value is smaller than Alpha = 0.01, **we have to reject the Null Hypothesis. 
+Therefore the model fits the data.**
+
+
+### Problem 2 - J
+```{r}
+t_rejection_point <- qt(0.025, 28, lower.tail = FALSE)
+f_rejection_point <- qf(0.05, 1, 28, lower.tail = FALSE)
+t_rej_sqrd <- t_rejection_point * t_rejection_point
+t_rej_sqrd
+f_rejection_point
+```
+
+As we can see, the F-rejection point is equal to the T-rejection point squared. 
